@@ -28,6 +28,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::get('/asignaciones/create', [AsignacionesController::class, 'create'])->name('asignaciones.create');
     Route::post('/asignaciones', [AsignacionesController::class, 'store'])->name('asignaciones.store');
     Route::get('/asignaciones/{asignacion}/pdf', [AsignacionesController::class, 'generarPdf'])->name('asignaciones.pdf');
+    Route::post('/asignaciones/{asignacion}/devolver', [AsignacionesController::class, 'devolver'])->name('asignaciones.devolver');
 
 });
 

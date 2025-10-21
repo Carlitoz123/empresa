@@ -19,6 +19,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
@@ -51,6 +56,14 @@
                         </td>
                         <td>
                             <a href="{{ route('asignaciones.pdf', $asignacion) }}" class="btn btn-sm btn-danger" target="_blank"><i class="fas fa-file-pdf"></i></a>
+                            @if(!$asignacion->fecha_devolucion)
+                                <form action="{{ route('asignaciones.devolver', $asignacion) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que quieres finalizar esta asignación?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fas fa-check-circle"></i> Finalizar
+                                    </button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

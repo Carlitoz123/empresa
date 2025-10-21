@@ -7,6 +7,7 @@ use App\Models\Dispositivo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class AsignacionesController extends Controller
 {
@@ -55,5 +56,25 @@ class AsignacionesController extends Controller
         $asignacion->load(['user', 'dispositivo']);
         $pdf = Pdf::loadView('admin.pdf.responsiva', compact('asignacion'));
         return $pdf->stream('responsiva-'.$asignacion->id.'.pdf');
+    }
+
+    public function devolver(Asignacion $asignacion)
+    {
+        // 1. Validar que la asignación no esté ya finalizada
+        if ($asignacion->fecha_devolucion) {
+            return redirect()->route('asignaciones.index')->with('error', 'Esta asignación ya ha sido finalizada.');
+        }
+
+        // 2. Actualizar la fecha de devolución en la asignación
+        $asignacion->fecha_devolucion = Carbon::now();
+        $asignacion->save();
+
+        // 3. Actualizar el estado del dispositivo a 'activo' (disponible)
+        $dispositivo = $asignacion->dispositivo;
+        $dispositivo->estado = 'activo';
+        $dispositivo->save();
+
+        // 4. Redirigir con un mensaje de éxito
+        return redirect()->route('asignaciones.index')->with('success', 'Dispositivo devuelto y asignación finalizada correctamente.');
     }
 }
