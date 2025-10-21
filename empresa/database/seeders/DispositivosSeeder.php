@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon; // Importamos Carbon para manejar las fechas fácilmente
 
@@ -13,10 +14,17 @@ class DispositivosSeeder extends Seeder
      */
     public function run(): void
     {
-        // Opcional: Limpiar la tabla antes de sembrar
+        // Deshabilitar temporalmente la revisión de claves foráneas
+        Schema::disableForeignKeyConstraints();
+
+        // Limpiar las tablas. Es importante truncar la tabla hija ('asignaciones') primero.
+        DB::table('asignaciones')->truncate();
         DB::table('dispositivos')->truncate();
 
-        // 📝 Definición de los datos de prueba
+        // Volver a habilitar la revisión de claves foráneas
+        Schema::enableForeignKeyConstraints();
+
+        // Definición de los datos de prueba
         $dispositivos = [
             [
                 'numero_serie' => 'TAB-A001-XYZ',
@@ -28,8 +36,7 @@ class DispositivosSeeder extends Seeder
                 'capacidad_almacenamiento_mb' => 64 * 1024, // 64GB
                 'capacidad_ram_mb' => 4 * 1024, // 4GB
                 'estado' => 'en_uso',
-                'fecha_adquisicion' => Carbon::parse('2023-01-15'),
-                'user_id' => 1, // Asignado al User ID 1 (si existe)
+                'fecha_adquisicion' => Carbon::parse('2023-01-15'),                
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -44,7 +51,6 @@ class DispositivosSeeder extends Seeder
                 'capacidad_ram_mb' => 6 * 1024, // 6GB
                 'estado' => 'activo',
                 'fecha_adquisicion' => Carbon::parse('2024-03-10'),
-                'user_id' => null, // Disponible para asignar
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -59,13 +65,12 @@ class DispositivosSeeder extends Seeder
                 'capacidad_ram_mb' => 4 * 1024, // 4GB
                 'estado' => 'mantenimiento',
                 'fecha_adquisicion' => Carbon::parse('2022-07-20'),
-                'user_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
 
-        // 🚀 Insertar todos los registros de una sola vez
+        //  Insertar todos los registros de una sola vez
         DB::table('dispositivos')->insert($dispositivos);
     }
 }

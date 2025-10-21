@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             DispositivosSeeder::class,
+            AsignacionesSeeder::class, // Añadimos el nuevo seeder aquí
         ]);
     }
 }

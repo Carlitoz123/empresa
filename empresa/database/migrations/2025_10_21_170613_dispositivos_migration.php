@@ -31,11 +31,7 @@ return new class extends Migration
             //  Campos de Estado y Asignación
             $table->enum('estado', ['activo', 'en_uso', 'mantenimiento', 'baja'])->default('activo');
             $table->timestamp('fecha_adquisicion')->nullable();
-            
-            //  Relación con Usuarios (Asignación)
-            // Relación opcional a la tabla 'users'. Indica a quién está asignado actualmente.
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); 
-
+ 
             $table->timestamps(); // created_at y updated_at
         });
     }
