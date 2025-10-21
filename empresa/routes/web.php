@@ -1,47 +1,25 @@
 <?php
-//modifcare
-
-
-
-
-
-
-
-
-
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsersController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PostController;
-//ENDPOINT
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+// Esta es la ruta principal. Ahora muestra la vista 'about'.
 Route::get('/', function () {
-    return view('welcome');
-});
-RoutE::get("/contact", function(){ 
-    return view('contact');
-});
-RoutE::get("/post", function(){ 
-    return view('post');
-});
-RoutE::get("/about", function(){ 
     return view('about');
 });
 
-    Route::group(['prefix'=>'dashboard'],function(){
-
-    Route::resource('/',DashboardController::class);
-    Route::resource('/posts',PostController::class);
-    Route::get('/posts/actions/add',[PostController::class, 'showAdd']);
-
-    RoutE::get("/users",[UsersController::class,'getUsers']);
-    RoutE::post("/users",[UsersController::class,'createUsers']);
-
-
-});
-
-
-
+// Rutas de autenticación que vienen con Laravel (login, register, etc.)
 Auth::routes();
 
+// Ruta para el dashboard una vez que el usuario inicia sesión.
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
