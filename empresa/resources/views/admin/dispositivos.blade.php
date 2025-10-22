@@ -19,6 +19,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
@@ -42,9 +47,42 @@
                         <td>{{ $dispositivo->marca }}</td>
                         <td>{{ $dispositivo->modelo }}</td>
                         <td>{{ $dispositivo->numero_serie }}</td>
-                        <td><span class="badge badge-info">{{ $dispositivo->estado }}</span></td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                            @if($dispositivo->estado == 'activo')
+                                <span class="badge badge-success">Activo</span>
+                            @elseif($dispositivo->estado == 'en_uso')
+                                <span class="badge badge-info">En Uso</span>
+                            @elseif($dispositivo->estado == 'mantenimiento')
+                                <span class="badge badge-warning">Mantenimiento</span>
+                            @else
+                                <span class="badge badge-secondary">{{ ucfirst($dispositivo->estado) }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <!-- Botón para poner en mantenimiento (si está activo) -->
+                            @if($dispositivo->estado == 'activo')
+                                <form action="{{ route('dispositivos.mantenimiento', $dispositivo) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Poner este equipo en mantenimiento?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-warning" title="Poner en Mantenimiento"><i class="fas fa-tools"></i></button>
+                                </form>
+                            @endif
+
+                            <!-- Botón para activar (si está en mantenimiento) -->
+                            @if($dispositivo->estado == 'mantenimiento')
+                                <form action="{{ route('dispositivos.activar', $dispositivo) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Activar este equipo?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success" title="Activar Dispositivo"><i class="fas fa-power-off"></i></button>
+                                </form>
+                            @endif
+
+                            <!-- Botón para eliminar (si no está en uso) -->
+                            @if($dispositivo->estado != 'en_uso')
+                                <form action="{{ route('dispositivos.destroy', $dispositivo) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este dispositivo? Esta acción no se puede deshacer.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Eliminar Dispositivo"><i class="fas fa-trash"></i></button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

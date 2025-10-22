@@ -22,6 +22,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::get('/dispositivos', [DispositivosController::class, 'index'])->name('dispositivos.index');
     Route::get('/dispositivos/create', [DispositivosController::class, 'create'])->name('dispositivos.create');
     Route::post('/dispositivos', [DispositivosController::class, 'store'])->name('dispositivos.store');
+    Route::post('/dispositivos/{dispositivo}/mantenimiento', [DispositivosController::class, 'setMantenimiento'])->name('dispositivos.mantenimiento');
+    Route::post('/dispositivos/{dispositivo}/activar', [DispositivosController::class, 'setActivo'])->name('dispositivos.activar');
+    Route::delete('/dispositivos/{dispositivo}', [DispositivosController::class, 'destroy'])->name('dispositivos.destroy');
+
 
     // Rutas para Asignaciones
     Route::get('/asignaciones', [AsignacionesController::class, 'index'])->name('asignaciones.index');

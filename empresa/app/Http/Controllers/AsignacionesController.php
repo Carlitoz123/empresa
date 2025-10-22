@@ -6,7 +6,7 @@ use App\Models\Asignacion;
 use App\Models\Dispositivo;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
+use PDF; // Cambia esta línea
 use Carbon\Carbon;
 
 class AsignacionesController extends Controller
@@ -54,7 +54,7 @@ class AsignacionesController extends Controller
     {
         // Carga las relaciones para tener los datos en la vista del PDF
         $asignacion->load(['user', 'dispositivo']);
-        $pdf = Pdf::loadView('admin.pdf.responsiva', compact('asignacion'));
+        $pdf = PDF::loadView('admin.pdf.responsiva', compact('asignacion')); // Y también aquí
         return $pdf->stream('responsiva-'.$asignacion->id.'.pdf');
     }
 
