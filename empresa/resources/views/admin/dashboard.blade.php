@@ -100,47 +100,62 @@
 <!-- Content Row: Gráficos -->
 <div class="row">
 
-    <!-- Gráfico de Área (Ejemplo) -->
-    <div class="col-xl-8 col-lg-7">
+    <!-- Lista de Tipos de Dispositivos -->
+    <div class="col-lg-6 mb-4">
         <div class="card shadow mb-4">
-            <!-- Card Header -->
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Asignaciones por Mes</h6>
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Tipos de Dispositivos</h6>
             </div>
-            <!-- Card Body -->
             <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
-                </div>
+                @php
+                    // Calculamos el total para las barras de progreso.
+                    // Usamos el total de dispositivos para que la proporción sea respecto al inventario completo.
+                    $totalParaPorcentaje = $totalDispositivos > 0 ? $totalDispositivos : 1;
+                @endphp
+
+                @forelse($tiposDispositivos as $tipo => $cantidad)
+                    @php
+                        $porcentaje = ($cantidad / $totalParaPorcentaje) * 100;
+                        $color = $tipo == 'telefono' ? 'bg-warning' : 'bg-info';
+                    @endphp
+                    <h4 class="small font-weight-bold">{{ ucfirst($tipo) }} <span
+                            class="float-right">{{ $cantidad }} Unidades</span></h4>
+                    <div class="progress mb-4">
+                        <div class="progress-bar {{ $color }}" role="progressbar" style="width: {{ $porcentaje }}%"
+                            aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                @empty
+                    <p class="text-center text-muted">No hay dispositivos registrados.</p>
+                @endforelse
             </div>
         </div>
     </div>
 
-    <!-- Gráfico Circular (Ejemplo) -->
-    <div class="col-xl-4 col-lg-5">
+    <!-- Panel: Dispositivos en Mantenimiento -->
+    <div class="col-lg-6 mb-4">
         <div class="card shadow mb-4">
-            <!-- Card Header -->
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Tipos de Dispositivos</h6>
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">Dispositivos en Mantenimiento</h6>
             </div>
-            <!-- Card Body -->
             <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="myPieChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Tablets
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Teléfonos
-                    </span>
-                </div>
+                @forelse($dispositivosEnMantenimientoList as $dispositivo)
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <i class="fas fa-mobile-alt text-gray-400 mr-2"></i>
+                            <strong>{{ $dispositivo->nombre_dispositivo }}</strong>
+                            <span class="text-muted small"> ({{ $dispositivo->marca }} {{ $dispositivo->modelo }})</span>
+                        </div>
+                        <a href="{{ route('dispositivos.index') }}" class="btn btn-sm btn-outline-secondary">
+                            Gestionar
+                        </a>
+                    </div>
+                @empty
+                    <p class="text-center text-muted mt-3">No hay dispositivos en mantenimiento actualmente.</p>
+                @endforelse
             </div>
         </div>
     </div>
+
 </div>
 
 @endsection
